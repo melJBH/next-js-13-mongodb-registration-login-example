@@ -6,5 +6,14 @@ export default apiHandler({
 
 async function authenticate(req, res) {
     const user = await usersRepo.authenticate(req.body);
-    return res.status(200).json(user);
+    // Desestructurar el objeto user y agregar las nuevas propiedades al objeto de respuesta
+    const { email, role, registrationDate, ...rest } = user;
+    const userWithAdditionalInfo = {
+        ...rest,
+        email,
+        role,
+        registrationDate
+    };
+
+    return res.status(200).json(userWithAdditionalInfo);
 }

@@ -52,6 +52,11 @@ async function create(params) {
         user.hash = bcrypt.hashSync(params.password, 10);
     }
 
+    // Set new data
+    user.email = params.email;
+    user.role = params.role;
+    user.registrationDate = params.registrationDate;
+
     // save user
     await user.save();
 }
@@ -65,13 +70,17 @@ async function update(id, params) {
         throw 'Username "' + params.username + '" is already taken';
     }
 
-    // hash password if it was entered
-    if (params.password) {
-        params.hash = bcrypt.hashSync(params.password, 10);
-    }
+    // Set new data
+    user.email = params.email;
+    user.role = params.role;
+    user.registrationDate = params.registrationDate;
 
-    // copy params properties to user
-    Object.assign(user, params);
+    // copy params properties to user, excluding email, role, and registrationDate
+    Object.keys(params).forEach(key => {
+        if (key !== 'email' && key !== 'role' && key !== 'registrationDate') {
+            user[key] = params[key];
+        }
+    });
 
     await user.save();
 }

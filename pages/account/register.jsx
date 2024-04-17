@@ -12,7 +12,7 @@ export default Register;
 function Register() {
     const router = useRouter();
 
-    // form validation rules 
+    // form validation rules
     const validationSchema = Yup.object().shape({
         firstName: Yup.string()
             .required('First Name is required'),

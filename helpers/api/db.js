@@ -8,19 +8,20 @@ mongoose.connect(process.env.MONGODB_URI || serverRuntimeConfig.connectionString
 mongoose.Promise = global.Promise;
 
 export const db = {
-    User: userModel()
+    User: userModel(),
+    Appointment: appointmentModel()
 };
-
-// mongoose models with schema definitions
 
 function userModel() {
     const schema = new Schema({
         username: { type: String, unique: true, required: true },
         hash: { type: String, required: true },
         firstName: { type: String, required: true },
-        lastName: { type: String, required: true }
+        lastName: { type: String, required: true },
+        email: { type: String, unique: true, required: true }, // Nuevo campo: Email
+        role: { type: String, enum: ['user', 'admin'], default: 'user' }, // Nuevo campo: Rol
+        registrationDate: { type: Date, default: Date.now } // Nuevo campo: Fecha de Registro
     }, {
-        // add createdAt and updatedAt timestamps
         timestamps: true
     });
 
@@ -34,4 +35,17 @@ function userModel() {
     });
 
     return mongoose.models.User || mongoose.model('User', schema);
+}
+
+function appointmentModel() {
+    const schema = new Schema({
+        dateTime: { type: Date, required: true },
+        userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+        description: { type: String, required: true },
+        status: { type: String, enum: ['pending', 'completed', 'cancelled'], default: 'pending' }
+    }, {
+        timestamps: true
+    });
+
+    return mongoose.models.Appointment || mongoose.model('Appointment', schema);
 }

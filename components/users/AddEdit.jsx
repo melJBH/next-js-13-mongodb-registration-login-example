@@ -12,35 +12,35 @@ function AddEdit(props) {
     const user = props?.user;
     const router = useRouter();
 
-    // form validation rules 
+    // Form validation rules
     const validationSchema = Yup.object().shape({
-        firstName: Yup.string()
-            .required('First Name is required'),
-        lastName: Yup.string()
-            .required('Last Name is required'),
-        username: Yup.string()
-            .required('Username is required'),
+        firstName: Yup.string().required('First Name is required'),
+        lastName: Yup.string().required('Last Name is required'),
+        username: Yup.string().required('Username is required'),
+        email: Yup.string().email('Invalid email').required('Email is required'),
         password: Yup.string()
             .transform(x => x === '' ? undefined : x)
-            // password optional in edit mode
             .concat(user ? null : Yup.string().required('Password is required'))
-            .min(6, 'Password must be at least 6 characters')
+            .min(6, 'Password must be at least 6 characters'),
+        role: Yup.string().required('Role is required'),
+        registrationDate: Yup.date().required('Registration Date is required')
     });
+
     const formOptions = { resolver: yupResolver(validationSchema) };
 
-    // set default form values if in edit mode
+    // Set default form values if in edit mode
     if (user) {
         formOptions.defaultValues = props.user;
     }
 
-    // get functions to build form with useForm() hook
+    // Get functions to build form with useForm() hook
     const { register, handleSubmit, reset, formState } = useForm(formOptions);
     const { errors } = formState;
 
     async function onSubmit(data) {
         alertService.clear();
         try {
-            // create or update user based on user prop
+            // Create or update user based on user prop
             let message;
             if (user) {
                 await userService.update(user.id, data);
@@ -50,7 +50,7 @@ function AddEdit(props) {
                 message = 'User added';
             }
 
-            // redirect to user list with success message
+            // Redirect to user list with success message
             router.push('/users');
             alertService.success(message, true);
         } catch (error) {
@@ -77,15 +77,33 @@ function AddEdit(props) {
                 <div className="mb-3 col">
                     <label className="form-label">Username</label>
                     <input name="username" type="text" {...register('username')} className={`form-control ${errors.username ? 'is-invalid' : ''}`} />
-                    <div className="invalid-feedback">{errors.email?.message}</div>
+                    <div className="invalid-feedback">{errors.username?.message}</div>
                 </div>
                 <div className="mb-3 col">
-                    <label className="form-label">
-                        Password
-                        {user && <em className="ms-1">(Leave blank to keep the same password)</em>}
-                    </label>
+                    <label className="form-label">Email</label>
+                    <input name="email" type="text" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`} />
+                    <div className="invalid-feedback">{errors.email?.message}</div>
+                </div>
+            </div>
+            <div className="row">
+                <div className="mb-3 col">
+                    <label className="form-label">Password</label>
                     <input name="password" type="password" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`} />
                     <div className="invalid-feedback">{errors.password?.message}</div>
+                </div>
+                <div className="mb-3 col">
+                    <label className="form-label">Role</label>
+                    <select name="role" {...register('role')} className={`form-control ${errors.role ? 'is-invalid' : ''}`}>
+                        <option value="">Select Role</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                    </select>
+                    <div className="invalid-feedback">{errors.role?.message}</div>
+                </div>
+                <div className="mb-3 col">
+                    <label className="form-label">Registration Date</label>
+                    <input name="registrationDate" type="date" {...register('registrationDate')} className={`form-control ${errors.registrationDate ? 'is-invalid' : ''}`} />
+                    <div className="invalid-feedback">{errors.registrationDate?.message}</div>
                 </div>
             </div>
             <div className="mb-3">

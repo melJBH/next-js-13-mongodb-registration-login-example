@@ -27,7 +27,7 @@ function error(message, showAfterRedirect = false) {
 
 // clear alerts
 function clear() {
-    // if showAfterRedirect flag is true the alert is not cleared 
+    // if showAfterRedirect flag is true the alert is not cleared
     // for one route change (e.g. after successful registration)
     let alert = alertSubject.value;
     if (alert?.showAfterRedirect) {

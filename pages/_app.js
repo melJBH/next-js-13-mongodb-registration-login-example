@@ -60,6 +60,11 @@ function App({ Component, pageProps }) {
                 {authorized &&
                     <Component {...pageProps} />
                 }
+                {authorized && router.pathname === '/' &&
+                    <div className="container mt-3">
+                        <button className="btn btn-primary">Medical Appointments</button>
+                    </div>
+                }
             </div>
         </>
     );

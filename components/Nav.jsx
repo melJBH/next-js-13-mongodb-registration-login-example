@@ -21,6 +21,7 @@ function Nav() {
             <div className="navbar-nav">
                 <NavLink href="/" exact className="nav-item nav-link">Home</NavLink>
                 <NavLink href="/users" className="nav-item nav-link">Users</NavLink>
+                <NavLink href="/appointment" className="nav-item nav-link">Appointments</NavLink>
                 <button onClick={userService.logout} className="btn btn-link nav-item nav-link">Logout</button>
             </div>
         </nav>
