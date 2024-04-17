@@ -9,7 +9,8 @@ mongoose.Promise = global.Promise;
 
 export const db = {
     User: userModel(),
-    Appointment: appointmentModel()
+    Appointment: appointmentModel(),
+    Vacation: vacationModel()
 };
 
 function userModel() {
@@ -48,4 +49,18 @@ function appointmentModel() {
     });
 
     return mongoose.models.Appointment || mongoose.model('Appointment', schema);
+}
+
+function vacationModel() {
+    const schema = new Schema({
+        userId: { type: Schema.Types.ObjectId, ref: 'User', required: true }, // Referencia al usuario
+        startDate: { type: Date, required: true }, // Fecha de inicio de las vacaciones
+        endDate: { type: Date, required: true }, // Fecha de fin de las vacaciones
+        status: { type: String, enum: ['approved', 'pending', 'rejected'], default: 'pending' }, // Estado de las vacaciones
+        comments: { type: String } // Comentarios opcionales
+    }, {
+        timestamps: true
+    });
+
+    return mongoose.models.Vacation || mongoose.model('Vacation', schema);
 }
